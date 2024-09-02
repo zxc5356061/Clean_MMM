@@ -5,7 +5,7 @@ import os
 from datetime import datetime, timedelta
 import pandas as pd
 import Validator
-import Trandformer
+import Transformer
 
 
 def validate_grouped_sum(filename: str, df: pd.DataFrame, column_name: str):
@@ -39,7 +39,6 @@ col_to_drop = [
 
 ]
 
-special_case = ['POS']
 
 for file_name in dir_list:
     # to ignore system files
@@ -52,34 +51,25 @@ for file_name in dir_list:
         # open file
         with open(os.path.join(path, file_name), 'r') as f:
             # print(print(f"{file_name}: Start"))
-            df = pd.read_csv(f)
+            df_raw = pd.read_csv(f)
 
             # Exclude error rows if there is any
-            df = df[~df['Check'].astype(str).str.lower().str.contains('error')]
+            df_raw = df_raw[~df_raw['Check'].astype(str).str.lower().str.contains('error')]
 
             # fill na values
-            df = df.infer_objects(copy=False).fillna(0)
+            df_raw = df_raw.infer_objects(copy=False).fillna(0)
 
             # Drop unnecessary columns
             for field in col_to_drop:
-                if field in df.columns:
-                    df = df.drop(field, axis=1)
+                if field in df_raw.columns:
+                    df_raw = df_raw.drop(field, axis=1)
 
             # Validate Date format
-            df.rename(columns={'Date': 'DATE'}, inplace=True)
-            data_validator = Validator.DataValidator(df, 'DATE')
+            df_raw.rename(columns={'Date': 'DATE'}, inplace=True)
+            data_validator = Validator.DataValidator(df_raw, 'DATE')
             data_validator.validate_date_column()
 
-            # Special handel
-            if media_name in special_case:
-                df['DATE'] = pd.to_datetime(df['DATE'])
-                df['End_DATE'] = df['DATE'] + pd.offsets.MonthEnd(0)
-
-                date_transformer = Trandformer.DataTransformer(df)
-                df = date_transformer.date_range_to_daily('DATE', 'End_DATE', 'Spends')
-
-            # Check 'Spends' column
-            if "Spends" not in df.columns:
+            if "Spends" not in df_raw.columns:
                 raise ValueError(f"Error: {file_name} does not have Spends column.")
 
             check_list = [['Spends', 'float64', f'{media_name}_S'],
@@ -89,6 +79,19 @@ for file_name in dir_list:
 
             for check_item in check_list:
                 data_validator.validate_and_rename_column(file_name, *check_item)
+
+            # Special handle
+            special_case = ['Sample1']
+            special_case_col = [f'{media_name}_S']
+
+            if media_name in special_case:
+                df_raw['DATE'] = pd.to_datetime(df_raw['DATE'])
+                df_raw['End_DATE'] = df_raw['DATE'] + pd.offsets.MonthEnd(0)
+
+                date_transformer = Transformer.DataTransformer(df_raw)
+                df = date_transformer.date_range_to_daily('DATE', 'End_DATE', *special_case_col)
+            else:
+                df = df_raw
 
             # Validate null values
             null_columns = [col for col in df.columns if df[col].isnull().any()]
@@ -106,7 +109,7 @@ for file_name in dir_list:
                 validate_grouped_sum(file_name, df_grouped, i)
 
             # To resemble daily data into weekly data
-            resampler = Trandformer.DataTransformer(df_grouped)
+            resampler = Transformer.DataTransformer(df_grouped)
             resampled_df = resampler.resample_daily_to_weekly('DATE')
             for col in variables:
                 validate_resampled_sum(df_grouped, resampled_df, col, media_name)
@@ -119,7 +122,7 @@ for file_name in dir_list:
 
             count_pass += 1
 
-            # output_file_path = os.path.join(path, f"{time}_{region}_CLIENT_{media_name}.csv")
-            # resampled_df.to_csv(output_file_path, index=False)
+            output_file_path = os.path.join(path, f"{time}_{region}_CLIENT_{media_name}.csv")
+            resampled_df.to_csv(output_file_path, index=False)
 
 print(f"{count_pass} file(s) Done")
