@@ -22,7 +22,7 @@ def validate_resampled_sum(df_o: pd.DataFrame, df_r: pd.DataFrame, col: str, med
 
 
 # Get the list of all files and directories
-path = "/Region"
+path = "/Users/huangp/Documents/Data_team/DT_project/Clean_MMM/Region"
 dir_list = os.listdir(path)
 
 time = datetime.now().strftime("%Y_%m_%d")
@@ -55,9 +55,7 @@ for file_name in dir_list:
             df_raw = df_raw.infer_objects(copy=False).fillna(0)
 
             # Drop unnecessary columns
-            for field in col_to_drop:
-                if field in df_raw.columns:
-                    df_raw = df_raw.drop(field, axis=1)
+            df_raw.drop(columns=[col for col in col_to_drop if col in df_raw.columns], inplace=True)
 
             # Validate Date format
             df_raw.rename(columns={'Date': 'DATE'}, inplace=True)
