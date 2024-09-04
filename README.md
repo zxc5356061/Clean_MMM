@@ -23,16 +23,16 @@ Clean_MMM/
 ```
 
 ## Expected outcome
-1. The processed data will be saved as CSV files with the format: {date}_{region}_CLIENT_{media_name}.csv
+1. The processed data will be saved as CSV files with the format: {date}_{region}_{name}_{media_name}.csv
 2. Sum of each column will also to calculated for manual validation.
 ```text
  Channel:  BEFR Sample1
 Columns:  ['DATE', 'Sample1_S']
-Sum of Sample1_S:  57444.0
+Sum of Sample1_S:  60701.05
 
  Channel:  BEFR Sample2
 Columns:  ['DATE', 'Sample2_S', 'Sample2_I', 'Sample2_C']
-Sum of Sample2_S:  5694.07
-Sum of Sample2_I:  4718762
-Sum of Sample2_C:  27336
+Sum of Sample2_S:  6110.95
+Sum of Sample2_I:  4723394
+Sum of Sample2_C:  29652
 ```
