@@ -12,11 +12,13 @@ The project contains several major sections.
 - **Input Data**:
   - CSV files contains column 'DATE', dependent and independent variables.
 
+Files included are mock data and anonymised.
+
 ```bash
 Clean_MMM/
-    ├── BEFR/
-        ├── 2024_xxxx_BEFR_company_MMM_Deliverables_Marketing data (company)_batch1 - Sample1.csv
-        └── 2024_xxxx_BEFR_company_MMM_Deliverables_Marketing data (company)_batch1 - Sample2.csv
+    ├── Region/
+        ├── 2024_xxxx_Region_company_MMM_Deliverables_Marketing_batch1 - Sample1.csv
+        └── 2024_xxxx_Region_company_MMM_Deliverables_Marketing_batch1 - Sample2.csv
     ├── Clean.py
     ├── Transformer.py
     └── Validator.py
@@ -26,11 +28,11 @@ Clean_MMM/
 1. The processed data will be saved as CSV files with the format: {date}_{region}_{name}_{media_name}.csv
 2. Sum of each column will also to calculated for manual validation.
 ```text
- Channel:  BEFR Sample1
+ Channel:  Region Sample1
 Columns:  ['DATE', 'Sample1_S']
 Sum of Sample1_S:  60701.05
 
- Channel:  BEFR Sample2
+ Channel:  Region Sample2
 Columns:  ['DATE', 'Sample2_S', 'Sample2_I', 'Sample2_C']
 Sum of Sample2_S:  6110.95
 Sum of Sample2_I:  4723394
