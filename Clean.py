@@ -32,19 +32,6 @@ count_pass = 0
 
 col_to_drop = [
     "Check",
-    "CHANNEL",
-    "Operating system",
-    "Campaign name",
-    "Adset name (optional)",
-    "adset name",
-    "adset name (optional)",
-    "adset name (optional)",
-    "Ad group (optional)",
-    "TYPE",
-    "NAME",
-    "YEAR",
-    ""
-
 ]
 
 
@@ -91,8 +78,8 @@ for file_name in dir_list:
                 data_validator.validate_and_rename_column(file_name, *check_item)
 
             # Special handle
-            special_case = ['PR']
-            special_case_col = [f'{media_name}_S',f'{media_name}_R',f'{media_name}_V']
+            special_case = ['Sample1']
+            special_case_col = [f'{media_name}_S']
 
             if media_name in special_case:
                 df_raw['DATE'] = pd.to_datetime(df_raw['DATE'])
