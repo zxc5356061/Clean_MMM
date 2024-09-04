@@ -138,7 +138,7 @@ for file_name in dir_list:
 
             count_pass += 1
 
-            # output_file_path = os.path.join(path, f"{time}_{region}_CLIENT_{media_name}.csv")
-            # resampled_df.to_csv(output_file_path, index=False)
+            output_file_path = os.path.join(path, f"{time}_{region}_CLIENT_{media_name}.csv")
+            resampled_df.to_csv(output_file_path, index=False)
 
 print(f"{count_pass} file(s) Done")
