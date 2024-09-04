@@ -36,6 +36,14 @@ col_to_drop = [
     "Operating system",
     "Campaign name",
     "Adset name (optional)",
+    "adset name",
+    "adset name (optional)",
+    "adset name (optional)",
+    "Ad group (optional)",
+    "TYPE",
+    "NAME",
+    "YEAR",
+    ""
 
 ]
 
@@ -75,14 +83,16 @@ for file_name in dir_list:
             check_list = [['Spends', 'float64', f'{media_name}_S'],
                           ['clicks', 'int', f'{media_name}_C'],
                           ['Impressions', 'int', f'{media_name}_I'],
-                          ['Sends', 'int', f'{media_name}_sends']]
+                          ['Sends', 'int', f'{media_name}_sends'],
+                          ['Reach','int', f'{media_name}_R'],
+                          ['ad value', 'float64', f'{media_name}_V']]
 
             for check_item in check_list:
                 data_validator.validate_and_rename_column(file_name, *check_item)
 
             # Special handle
-            special_case = ['Sample1']
-            special_case_col = [f'{media_name}_S']
+            special_case = ['PR']
+            special_case_col = [f'{media_name}_S',f'{media_name}_R',f'{media_name}_V']
 
             if media_name in special_case:
                 df_raw['DATE'] = pd.to_datetime(df_raw['DATE'])
@@ -102,8 +112,14 @@ for file_name in dir_list:
             df_grouped = df.groupby(['DATE']).sum().reset_index()
             assert not df_grouped.isnull().values.any(), f"{file_name} Returned data contains NaN."
 
-            variables = [f'{media_name}_S', f'{media_name}_I', f'{media_name}_C', f'{media_name}_sends',
-                         f'{media_name}_units', f'{media_name}_GRP']
+            variables = [f'{media_name}_S',
+                         f'{media_name}_I',
+                         f'{media_name}_C',
+                         f'{media_name}_sends',
+                         f'{media_name}_units',
+                         f'{media_name}_GRP',
+                         f'{media_name}_R',
+                         f'{media_name}_V']
 
             for i in variables:
                 validate_grouped_sum(file_name, df_grouped, i)
@@ -122,7 +138,7 @@ for file_name in dir_list:
 
             count_pass += 1
 
-            output_file_path = os.path.join(path, f"{time}_{region}_CLIENT_{media_name}.csv")
-            resampled_df.to_csv(output_file_path, index=False)
+            # output_file_path = os.path.join(path, f"{time}_{region}_CLIENT_{media_name}.csv")
+            # resampled_df.to_csv(output_file_path, index=False)
 
 print(f"{count_pass} file(s) Done")
