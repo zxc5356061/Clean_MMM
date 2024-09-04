@@ -22,7 +22,7 @@ def validate_resampled_sum(df_o: pd.DataFrame, df_r: pd.DataFrame, col: str, med
 
 
 # Get the list of all files and directories
-path = "/Users/huangp/Documents/Data_team/DT_project/Clean_MMM/BEFR"
+path = "/Region"
 dir_list = os.listdir(path)
 
 time = datetime.now().strftime("%Y_%m_%d")
