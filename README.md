@@ -5,11 +5,11 @@ This repository contains scripts and utilities designed to automate the transfor
 
 The project contains several major sections.
 
-- Clean.py: The main script to clean, transform, and validate the data.
+- **Clean.py**: The main script to clean, transform, and validate the data.
   - If a file only contains monthly data, then it will be required to transform the raw data by identifying the 'special_case' and 'special_case_col' in the script. 
-- Transformer.py: A utility script to handle date transformations and resampling of data from daily to weekly intervals.
-- Validator.py: A utility script to validate the date format, column types, and column values (e.g., handling missing values or incorrect formats).
-- Input Data:
+- **Transformer.py**: A utility script to handle date transformations and resampling of data from daily to weekly intervals.
+- **Validator.py**: A utility script to validate the date format, column types, and column values (e.g., handling missing values or incorrect formats).
+- **Input Data**:
   - CSV files contains column 'DATE', dependent and independent variables.
 
 ```bash
