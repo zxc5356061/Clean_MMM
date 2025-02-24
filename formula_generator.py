@@ -11,9 +11,12 @@ ni = "non_mandatory_int"
 i = "mandatory_int"
 
 nf = "non_mandatory_float"
+nf5 = "non_mandatory_float_5decimals"
 f = "mandatory_float"
 
 c = "currency"
+
+yn = "yes_no"
 
 inputs = {
     "A": country,
@@ -24,10 +27,10 @@ inputs = {
     "F": ni,
     "G": i,
     "H": nf,
-    "I": f,
-    "J": c,
-    # "K": str_time,
-    # "L": ni,
+    "I": nf5,
+    "J": f,
+    "K": c,
+    "L": yn,
     # "M": i,
     # "N": ni,
     # "O": s,
@@ -116,6 +119,11 @@ def validate_non_mandatory_float(col: str) -> str:
     return f'IF(OR(ISBLANK(${col}2), REGEXMATCH(TO_TEXT(${col}2), "^-?\d{{1,3}}(,\d{{3}})*\.\d{{2}}$")), "OK!", "Error - " & ${col}$1 & "; ")'
 
 
+def validate_non_mandatory_float_5decimals(col: str) -> str:
+    """Validate float(-,+,0) with . sign and exact two decimal spaces, or empty cell"""
+    return f'IF(OR(ISBLANK(${col}2), REGEXMATCH(TO_TEXT(${col}2), "^-?\d{{1,3}}(,\d{{3}})*\.\d{{5}}$")), "OK!", "Error - " & ${col}$1 & "; ")'
+
+
 def validate_mandatory_float(col: str) -> str:
     """Validate float(-,+,0) with . sign and exact two decimal spaces"""
     return f'IF(REGEXMATCH(TO_TEXT(${col}2), "^-?\d{{1,3}}(,\d{{3}})*\.\d{{2}}$"), "OK!", "Error - " & ${col}$1 & "; ")'
@@ -126,6 +134,10 @@ def validate_currency(col: str, currencies: tuple) -> str:
     condition = [f'EXACT(${col}2,"{cur}")' for cur in currencies]
     list_cur = ', '.join(condition)
     return f'IF(OR({list_cur}), "OK!", "Error - " & ${col}$1 & "; ")'
+
+
+def validate_yes_no(col: str) -> str:
+    return f'IF(OR(LOWER(${col}2) = "yes", LOWER(${col}2) = "no"), "OK!", "Error - " & ${col}$1 & "; ")'
 
 
 body = []
@@ -148,10 +160,14 @@ for col, check_type in inputs.items():
             body.append(validate_mandatory_int(col))
         case 'non_mandatory_float':
             body.append(validate_non_mandatory_float(col))
+        case 'non_mandatory_float_5decimals':
+            body.append(validate_non_mandatory_float_5decimals(col))
         case 'mandatory_float':
             body.append(validate_mandatory_float(col))
         case 'currency':
             body.append(validate_currency(col, std_currencies))
+        case 'yes_no':
+            body.append(validate_yes_no(col))
         case _:
             body.append(f'Unknown conditions -> {col}: {check_type}!')
 
