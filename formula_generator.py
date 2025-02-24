@@ -77,13 +77,11 @@ country_lists = ("Germany", "Italy", "USA", "UK")
 
 def validate_non_mandatory_string(col: str) -> str:
     """Validate empty cell, empty string, or string"""
-    # IF(OR(${col}2 = "", ISTEXT(${col}2), NOT(REGEXMATCH(TO_TEXT(${col}2), "\|"))), "OK!", "Error - " & ${col}$1 & "; ")
     return f'IF(OR(${col}2 = "", AND(ISTEXT(${col}2), NOT(REGEXMATCH(TO_TEXT(${col}2), "\|")))), "OK!", "Error - " & ${col}$1 & "; ")'
 
 
 def validate_mandatory_string(col: str) -> str:
     """Validate non-empty or string"""
-    # IF(AND(${col}2 <> "", ISTEXT(${col}2), NOT(REGEXMATCH(TO_TEXT(${col}2), "\|"))), "OK!", "Error - " & $E$1 & "; ")
     return f'IF(AND(${col}2 <> "", ISTEXT(${col}2), NOT(REGEXMATCH(TO_TEXT(${col}2), "\|"))), "OK!", "Error - " & ${col}$1 & "; ")'
 
 
@@ -105,27 +103,27 @@ def validate_date(col: str) -> str:
 
 
 def validate_non_mandatory_int(col: str) -> str:
-    """Validate empty cell or int"""
+    """Validate empty cell or int(-,+,0), with comma as the thousand separator"""
     return f'IF(OR(ISBLANK(${col}2), REGEXMATCH(TO_TEXT(${col}2), "^-?\d{{1,3}}(,\d{{3}})*$")), "OK!", "Error - " & ${col}$1 & "; ")'
 
 
 def validate_mandatory_int(col: str) -> str:
-    """Validate int(-,+,0)"""
+    """Validate int(-,+,0), with comma as the thousand separator"""
     return f'IF(REGEXMATCH(TO_TEXT(${col}2), "^-?\d{{1,3}}(,\d{{3}})*$"), "OK!", "Error - " & ${col}$1 & "; ")'
 
 
 def validate_non_mandatory_float(col: str) -> str:
-    """Validate float(-,+,0) with . sign and exact two decimal spaces, or empty cell"""
+    """Validate empty cell or float(-,+,0), with comma as the thousand separator and exact two decimals"""
     return f'IF(OR(ISBLANK(${col}2), REGEXMATCH(TO_TEXT(${col}2), "^-?\d{{1,3}}(,\d{{3}})*\.\d{{2}}$")), "OK!", "Error - " & ${col}$1 & "; ")'
 
 
 def validate_non_mandatory_float_5decimals(col: str) -> str:
-    """Validate float(-,+,0) with . sign and exact two decimal spaces, or empty cell"""
+    """Validate empty cell or float(-,+,0), with comma as the thousand separator and exact five decimals"""
     return f'IF(OR(ISBLANK(${col}2), REGEXMATCH(TO_TEXT(${col}2), "^-?\d{{1,3}}(,\d{{3}})*\.\d{{5}}$")), "OK!", "Error - " & ${col}$1 & "; ")'
 
 
 def validate_mandatory_float(col: str) -> str:
-    """Validate float(-,+,0) with . sign and exact two decimal spaces"""
+    """Validate float(-,+,0), with comma as the thousand separator and exact two decimals"""
     return f'IF(REGEXMATCH(TO_TEXT(${col}2), "^-?\d{{1,3}}(,\d{{3}})*\.\d{{2}}$"), "OK!", "Error - " & ${col}$1 & "; ")'
 
 
@@ -137,6 +135,7 @@ def validate_currency(col: str, currencies: tuple) -> str:
 
 
 def validate_yes_no(col: str) -> str:
+    """Validate yes or no, not case-sensitive"""
     return f'IF(OR(LOWER(${col}2) = "yes", LOWER(${col}2) = "no"), "OK!", "Error - " & ${col}$1 & "; ")'
 
 
